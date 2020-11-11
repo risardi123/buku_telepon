@@ -7,7 +7,7 @@ import RootReducers from './redux/reducers';
 import {createStore} from 'redux';
 import {Provider} from 'react-redux';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-
+console.ignoredYellowBox = ['Setting a timer']
 const persistConfig = {
   key: "root",
   storage: AsyncStorage,

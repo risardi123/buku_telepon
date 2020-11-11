@@ -22,16 +22,19 @@ const Landing = ({navigation}) => {
       method: 'GET',
     }).then((res)=>res.json())
   )
+  
   return(
     <MainHeader title={"Kontak"}
                 renderStaticBody={isLoading ? <LoadingBlocker/> : undefined}
                 renderRight={()=>
                   <View style={{justifyContent: 'flex-end', flexDirection: 'row'}}>
-                    <TouchableOpacity style={{borderRadius: 50, marginRight: 6, padding: 4}}>
-                      <Foundation name={'plus'} size={26} color={Color.color_0}/>
+                    <TouchableOpacity style={{borderRadius: 50, marginRight: 6, padding: 4}}
+                                      onPress={()=>navigation.push("CreateUpdateContact")}>
+                      <Foundation name={'plus'} size={24} color={Color.color_0}/>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{borderRadius: 50, marginLeft: 6, padding: 4}}>
-                      <Foundation name={'magnifying-glass'} size={26} color={Color.color_0}/>
+                    <TouchableOpacity style={{borderRadius: 50, marginLeft: 6, padding: 4}}
+                                      onPress={()=>navigation.push("SearchContact")}>
+                      <Foundation name={'magnifying-glass'} size={24} color={Color.color_0}/>
                     </TouchableOpacity>
                   </View>
                 }>
@@ -45,7 +48,7 @@ const Landing = ({navigation}) => {
                         <Image style={{width: 50, height: 50, borderRadius: 50, marginRight: 12, backgroundColor: 'lightgray'}}
                                source={{uri: photo || ""}}/>
                         <TouchableOpacity style={{flex: 1}}
-                                          onPress={()=>navigation.push("DetailContact")}>
+                                          onPress={()=>navigation.push("DetailContact",value)}>
                           <Text style={{fontSize: 18, fontWeight: 'bold'}}>
                             {`${firstName} ${lastName}`}
                           </Text>
@@ -54,7 +57,7 @@ const Landing = ({navigation}) => {
                           </Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={{borderRadius: 50, marginLeft: 6, padding: 4}}>
-                          <Foundation name={'telephone'} size={26} color={"green"}/>
+                          <Foundation name={'telephone'} size={26} color={Color.color_two_500}/>
                         </TouchableOpacity>
                       </View>
                     </View>

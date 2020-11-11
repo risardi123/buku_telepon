@@ -138,7 +138,7 @@ export default class Header extends React.PureComponent {
           color: titleColor,
           fontSize: 32,
           fontFamily: Platform.OS === 'ios' ? 'SF Pro Display' : 'SfPro-Bold',
-          fontWeight: Platform.OS === 'ios' ? 'bold' : 'normal'
+          fontWeight: 'bold'
         }]}>
           {this.props.title}
         </Animated.Text>
