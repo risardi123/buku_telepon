@@ -1,11 +1,13 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {
   View,
   Text,
   Image,
   ScrollView,
-  TouchableOpacity
-} from 'react-native'
+  Alert,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import {DeviceWidth, fetch_link, HeaderConfig} from '../Constant/Constant';
 import SecondaryHeader from '../components/SecondaryHeader';
 import Color from '../Constant/Color';
@@ -15,6 +17,7 @@ import {useQuery} from 'react-query';
 import LoadingBlocker from '../components/LoadingBlocker';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
+import {delete_contact} from '../fetcher/delete_contact';
 const calculateWidth = DeviceWidth * 0.3
 const LocalImage = (props) => {
   const {photo} = props
@@ -26,10 +29,10 @@ const LocalImage = (props) => {
   )
 }
 const DetailContact = ({navigation, route}) => {
+  const [loading, setLoading] = useState(false)
   HeaderConfig()
   const {params} = route || {}
-  const {item} = params || {}
-  const {id} = item || {}
+  const {id} = params || {}
   const {isLoading, data, error} = useQuery("asd",()=>
     fetch(`${fetch_link}contact/${id}`,{
       method: 'GET',
@@ -37,26 +40,70 @@ const DetailContact = ({navigation, route}) => {
   )
   if(isLoading || error) {
     return (
-      <LoadingBlocker/>
+      <SecondaryHeader title={"Detail Kontak"}
+                       onPressLeft={()=>navigation.goBack()}>
+        {
+          !error ? <LoadingBlocker/> : <Text>Something went wrong</Text>
+        }
+      </SecondaryHeader>
     )
+  }
+  const onSubmit = () =>{
+    setLoading(true)
+    delete_contact({
+      id: id
+    }).then((v)=>{
+      setLoading(false)
+      if(v.error) {
+        Alert.alert(v.error, v.message)
+      } else {
+        Alert.alert("Berhasil", "Kontak Terhapus", [{
+          text: 'Kembali',
+          onPress:()=>navigation.popToTop()
+        }])
+      }
+    }).catch((e)=>{
+      setLoading(false)
+      Alert.alert("catch",JSON.stringify(e))
+    })
   }
   const {photo, firstName, lastName} = data.data || {}
   return(
     <SecondaryHeader title={"Detail Kontak"}
                      renderRight={
                        <View style={{flex: 1, justifyContent: 'center', flexDirection: 'row'}}>
-                         <TouchableOpacity onPress={()=>navigation.push("CreateUpdateContact")}
-                                           style={{paddingRight: 12}}>
-                           <MaterialIcons name={'edit'}
-                                       size={24}
-                                       color={Color.color_0}/>
-                         </TouchableOpacity>
-                         <TouchableOpacity onPress={()=>navigation.push("CreateUpdateContact")}>
-                           <MaterialCommunity name={'trash-can'}
-                                              size={24}
-                                              color={Color.color_0}/>
-                         </TouchableOpacity>
-                       </View>}
+                         {
+                           !loading ?
+                             <>
+                               <TouchableOpacity onPress={()=>navigation.push("CreateUpdateContact", data.data)}
+                                                 style={{paddingRight: 12}}>
+                                 <MaterialIcons name={'edit'}
+                                                size={24}
+                                                color={Color.color_0}/>
+                               </TouchableOpacity>
+                               <TouchableOpacity onPress={()=>Alert.alert("Konfirmasi", "Apakah anda yakin untuk menghapus?",[
+                                 {
+                                   text: "Ya",
+                                   onPress:()=>onSubmit()
+                                 },
+                                 {
+                                   text: "Tidak"
+                                 }
+                               ])}>
+                                 <MaterialCommunity name={'trash-can'}
+                                                    size={24}
+                                                    color={Color.color_0}/>
+                               </TouchableOpacity>
+                             </>
+                             :
+                             <ActivityIndicator
+                               style={{flex: 0}}
+                               size={'large'}
+                               color={Color.color_0}
+                             />
+                         }
+                       </View>
+                     }
                      onPressLeft={()=>navigation.goBack()}>
       <ScrollView>
         <View style={{paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: 'lightgray'}}>

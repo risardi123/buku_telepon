@@ -13,16 +13,24 @@ import {useQuery} from 'react-query';
 import Color from '../Constant/Color';
 import Foundation from 'react-native-vector-icons/Foundation';
 import LoadingBlocker from '../components/LoadingBlocker';
+import SecondaryHeader from '../components/SecondaryHeader';
+import CellPhone from '../components/CellPhone';
 
 const Landing = ({navigation}) => {
   const [loading, setLoading] = useState(false)
   HeaderConfig()
-  const {isLoading, data, refetch} = useQuery("",()=>
+  const {isLoading, data, error, refetch} = useQuery("",()=>
     fetch(`${fetch_link}contact`,{
       method: 'GET',
     }).then((res)=>res.json())
   )
-  
+  if(isLoading || error) {
+    return (
+      <MainHeader title={"Kontak"}>
+        <LoadingBlocker/>
+      </MainHeader>
+    )
+  }
   return(
     <MainHeader title={"Kontak"}
                 renderStaticBody={isLoading ? <LoadingBlocker/> : undefined}
@@ -33,34 +41,20 @@ const Landing = ({navigation}) => {
                       <Foundation name={'plus'} size={24} color={Color.color_0}/>
                     </TouchableOpacity>
                     <TouchableOpacity style={{borderRadius: 50, marginLeft: 6, padding: 4}}
-                                      onPress={()=>navigation.push("SearchContact")}>
+                                      onPress={()=>navigation.push("SearchContact", data.data || [])}>
                       <Foundation name={'magnifying-glass'} size={24} color={Color.color_0}/>
                     </TouchableOpacity>
                   </View>
                 }>
       <FlatList renderItem={(value, index)=>{
                   const {item} = value || {}
-                  const {firstName, lastName, photo} = item || {}
+                  const {firstName, lastName, photo, id} = item || {}
                   return(
-                    <View key={index}
-                          style={{flex: 1, margin: 8, padding: 8, borderBottomWidth: 1, borderColor: 'lightgray'}}>
-                      <View style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
-                        <Image style={{width: 50, height: 50, borderRadius: 50, marginRight: 12, backgroundColor: 'lightgray'}}
-                               source={{uri: photo || ""}}/>
-                        <TouchableOpacity style={{flex: 1}}
-                                          onPress={()=>navigation.push("DetailContact",value)}>
-                          <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-                            {`${firstName} ${lastName}`}
-                          </Text>
-                          <Text>
-                            0812321321
-                          </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{borderRadius: 50, marginLeft: 6, padding: 4}}>
-                          <Foundation name={'telephone'} size={26} color={Color.color_two_500}/>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
+                    <CellPhone index={index}
+                               firstName={firstName}
+                               lastName={lastName}
+                               photo={photo}
+                               id={id}/>
                   )
                 }}
                 data={data && data.data}

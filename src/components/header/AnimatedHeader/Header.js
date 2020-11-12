@@ -122,7 +122,7 @@ export default class Header extends React.PureComponent {
               {this.props.renderLeft && this.props.renderLeft()}
             </View>
             <Animated.Text style={{opacity: reverseOpacity, textAlign: 'center',flex: 2,fontSize: fontSizeTitle,
-              color: titleColor, fontWeight: Platform.OS === 'ios' ? 'bold' : 'normal',
+              color: titleColor, fontWeight: 'bold',
               fontFamily: Platform.OS === 'ios' ? 'SF Pro Display' : 'SfPro-Bold'}}>
               {this.props.title}
             </Animated.Text>
