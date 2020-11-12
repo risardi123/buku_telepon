@@ -28,6 +28,13 @@ const Landing = ({navigation}) => {
       method: 'GET',
     }).then((res)=>res.json())
   )
+  useEffect(()=>{
+    if(refresh_landing === true) {
+      refetch().then(()=>{
+        dispatch(refreshLandingOff())
+      })
+    }
+  },[refresh_landing, dispatch, refreshLandingOff])
   if(isLoading || error) {
     return (
       <MainHeader title={"Kontak"}>
@@ -35,13 +42,6 @@ const Landing = ({navigation}) => {
       </MainHeader>
     )
   }
-  useEffect(()=>{
-    if(refresh_landing === true) {
-      refetch().then(()=>{
-        dispatch(refreshLandingOff())
-      })
-    }
-  },[refresh_landing])
   return(
     <MainHeader title={"Kontak"}
                 renderStaticBody={isLoading ? <LoadingBlocker/> : undefined}
@@ -68,7 +68,7 @@ const Landing = ({navigation}) => {
                                id={id}/>
                   )
                 }}
-                data={data && data.data}
+                data={data && data.data && data.data}
                 refreshing={loading}
                 progressViewOffset={150}
                 onRefresh={()=>{
