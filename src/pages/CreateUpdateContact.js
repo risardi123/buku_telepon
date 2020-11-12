@@ -14,10 +14,13 @@ import {useForm} from 'react-hook-form';
 import ControlledFloatingLabel from '../components/ControlledFloatingLabel';
 import {update_contact} from '../fetcher/update_contact';
 import {create_contact} from '../fetcher/create_contact';
+import {useDispatch} from 'react-redux';
+import {refreshLandingOn} from '../redux/actions/refreshLanding';
 
 const CreateUpdateContact = ({navigation, route}) => {
   const {params} = route
   const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
   const defaultValue = {
     ref_first: "",
     ref_last: "",
@@ -61,7 +64,10 @@ const CreateUpdateContact = ({navigation, route}) => {
         if(v.error) {
           Alert.alert(v.error, v.message)
         } else {
-          Alert.alert("Berhasil")
+          Alert.alert("Berhasil", "Memperbarui Kontak anda", [{
+            text: 'ya',
+            onPress:()=>dispatch(refreshLandingOn())
+          }])
         }
       }).catch((e)=>{
         setLoading(false)
@@ -75,7 +81,10 @@ const CreateUpdateContact = ({navigation, route}) => {
         if(v.error) {
           Alert.alert(v.error, v.message)
         } else {
-          Alert.alert("Berhasil Membuat kontak")
+          Alert.alert("Berhasil","Membuat kontak baru",[{
+            text: "ya",
+            onPress:()=>dispatch(refreshLandingOn())
+          }])
         }
       }).catch((e)=>{
         setLoading(false)

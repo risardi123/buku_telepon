@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import {
   FlatList,
   View,
@@ -15,10 +15,14 @@ import Foundation from 'react-native-vector-icons/Foundation';
 import LoadingBlocker from '../components/LoadingBlocker';
 import SecondaryHeader from '../components/SecondaryHeader';
 import CellPhone from '../components/CellPhone';
+import {useDispatch, useSelector} from 'react-redux';
+import {refreshLandingOff} from '../redux/actions/refreshLanding';
 
 const Landing = ({navigation}) => {
-  const [loading, setLoading] = useState(false)
   HeaderConfig()
+  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
+  const refresh_landing = useSelector(state=>state.refresh_landing_reducers)
   const {isLoading, data, error, refetch} = useQuery("",()=>
     fetch(`${fetch_link}contact`,{
       method: 'GET',
@@ -31,6 +35,13 @@ const Landing = ({navigation}) => {
       </MainHeader>
     )
   }
+  useEffect(()=>{
+    if(refresh_landing === true) {
+      refetch().then(()=>{
+        dispatch(refreshLandingOff())
+      })
+    }
+  },[refresh_landing])
   return(
     <MainHeader title={"Kontak"}
                 renderStaticBody={isLoading ? <LoadingBlocker/> : undefined}

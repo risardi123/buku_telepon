@@ -18,12 +18,18 @@ const SearchContact = ({navigation, route}) => {
     setResult(params)
   },[params])
   useEffect(()=>{
-    if(search && params.length > 0) {
-
+    if(search && params) {
+      console.warn("if")
+      const clone = [...params]
+      const results = clone.filter((value)=>{
+        return value.firstName.toLowerCase().includes(search.toLowerCase())
+      })
+      setResult(results)
+      console.warn(results)
     } else {
       setResult(params)
     }
-  },[search, params])
+  },[search, params, setResult])
   return(
     <SecondaryHeader title={"Cari sebuah kontak"}
                      onPressLeft={()=>navigation.goBack()}>
