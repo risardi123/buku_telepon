@@ -64,7 +64,7 @@ const CreateUpdateContact = ({navigation, route}) => {
         if(v.error) {
           Alert.alert(v.error, v.message)
         } else {
-          Alert.alert("Berhasil", "Memperbarui Kontak anda", [{
+          Alert.alert("Berhasil", "Memperbarui Kontak anda i am made a change", [{
             text: 'ya',
             onPress:()=>dispatch(refreshLandingOn())
           }])
